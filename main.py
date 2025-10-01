@@ -21,7 +21,7 @@ def get_db_connection():
 def get_unidades():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT DISTINCT nome FROM qualyteam_testevinicius.git initunidade")
+    cursor.execute("SELECT DISTINCT nome FROM qualyteam_testevinicius.unidade")
     result = [row[0] for row in cursor.fetchall()]
     cursor.close()
     conn.close()
