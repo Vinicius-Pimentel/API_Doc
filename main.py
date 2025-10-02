@@ -43,3 +43,27 @@ def get_unidades(
         conn.close()
 
     return JSONResponse(content=result)
+
+@app.get("/{database}/categorias")
+def get_categorias(
+    database: str = Path(..., description="Nome da database"),
+    token: str = Header(None)
+):
+    # Verifica token
+    if token != API_TOKEN:
+        raise HTTPException(status_code=401, detail="Token inválido")
+
+    conn = get_db_connection(database)
+    cursor = conn.cursor()
+    try:
+        # Busca nome e codigo da categoria
+        cursor.execute(f"SELECT nome, codigo FROM {database}.doc_categoriadedocumento")
+        result = [{"nome": row[0], "codigo": row[1]} for row in cursor.fetchall()]
+    except mysql.connector.Error as e:
+        raise HTTPException(status_code=500, detail=f"Erro na query: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return JSONResponse(content=result)
+
